@@ -1,23 +1,21 @@
-#include "pointwidget.h"
+#include "pointdialog.h"
+#include "ui_pointdialog.h"
+#include <QScatterSeries>
+#include <QVBoxLayout>
 
-PointWidget::PointWidget(QWidget *parent)
-    : QWidget(parent)
+PointDialog::PointDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::PointDialog)
 {
-    // Create chart view
-    createChartView();
-
-    // Create layout and add chart view to it
-    auto layout = new QVBoxLayout();
-    layout->addWidget(chartView_);
-    this->setLayout(layout);
-
-    // Set default widget size
-    resize(500, 500);
+    ui->setupUi(this);
 }
 
+PointDialog::~PointDialog()
+{
+    delete ui;
+}
 
-
-void PointWidget::createChartView() {
+void PointDialog::createChartView() {
     // Create chart and axis objects
     auto chart = new QChart();
     chart->createDefaultAxes();
@@ -47,10 +45,12 @@ void PointWidget::createChartView() {
     chartView_->setRenderHint(QPainter::Antialiasing);
 
     // Connect clicked signal of series to slot for handling point selection
-    connect(series, &QScatterSeries::clicked, this, &PointWidget::handlePointSelection);
+    connect(series, &QScatterSeries::clicked, this, &PointDialog::handlePointSelection);
+
+    ui->horizontalLayout->addWidget(chartView_);
 }
 
-void PointWidget::handlePointSelection(const QPointF& point) {
+void PointDialog::handlePointSelection(const QPointF& point) {
     // Get index of selected point
     auto series = qobject_cast<QScatterSeries*>(sender());
     auto index = series->points().indexOf(point);
@@ -61,4 +61,3 @@ void PointWidget::handlePointSelection(const QPointF& point) {
         qDebug() << "Selected point" << index << "has displacement" << displacement;
     }
 }
-

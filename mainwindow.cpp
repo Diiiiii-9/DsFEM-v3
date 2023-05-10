@@ -39,7 +39,7 @@ extern "C"
 #include "Job/boundcondition.h"
 #include "Job/job.h"
 
-#include "Vis/pointwidget.h"
+#include "Vis/pointdialog.h"
 
 //极小值
 #define epsilon 1e-6
@@ -1084,13 +1084,14 @@ void MainWindow::showFinalChart(QString outFile)
 
 void MainWindow::on_pushButton_selectPoint_clicked()
 {
-    // Create PointWidget instance
-    auto pointWidget = new PointWidget(this);
+    PointDialog pointWidget;
+    pointWidget.setModal(true);
+    int reply = pointWidget.exec();
+
 
     // Set mesh data for PointWidget
-    pointWidget->setMeshData(nodes, nodesDisplace, tris);
+    pointWidget.setMeshData(nodes, nodesDisplace, tris);
 
-    // Show PointWidget
-    pointWidget->show();
+    pointWidget.createChartView();
 }
 
