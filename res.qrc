@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>icon/icons8-software-64 (1).png</file>
+        <file>icon/icons8-software-64.png</file>
+        <file>icon/noun-human-resource-1985538.png</file>
+        <file>icon/noun-resource-2845050.png</file>
+        <file>icon/noun-resource-4617407.png</file>
+        <file>icon/noun-resource-5291147.png</file>
+    </qresource>
+    <qresource prefix="/resource">
+        <file>resource/bringForward.png</file>
+        <file>resource/bringToFront.png</file>
+        <file>resource/CircleIcon.png</file>
+        <file>resource/CursorIcon.png</file>
+        <file>resource/LineIcon.png</file>
+        <file>resource/new.png</file>
+        <file>resource/open.png</file>
+        <file>resource/RectangleIcon.png</file>
+        <file>resource/redo.png</file>
+        <file>resource/save.png</file>
+        <file>resource/sendBackward.png</file>
+        <file>resource/sendToBack.png</file>
+        <file>resource/trash_can.png</file>
+        <file>resource/undo.png</file>
+    </qresource>
+    <qresource prefix="/boundary">
+        <file>resource/constraint_fix.png</file>
+        <file>resource/constraint_leftRight.png</file>
+        <file>resource/constraint_upDown.png</file>
+    </qresource>
+</RCC>
