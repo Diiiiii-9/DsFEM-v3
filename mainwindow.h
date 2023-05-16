@@ -13,6 +13,7 @@
 #include <QList>
 #include <QVariant>
 #include <QXYSeries>
+#include <Vis/pointwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -51,10 +52,15 @@ private slots:
     void on_toolButton_LeftRight_clicked();
     void on_pushButton_point_clicked();
     void on_pushButton_distribute_clicked();
-    void on_tabWidget_currentChanged(int index);
     void on_pushButton_job_clicked();
 
     void on_pushButton_selectPoint_clicked();
+
+    void on_pushButton_zoomIn_clicked();
+
+    void on_pushButton_zoomOut_clicked();
+
+    void on_pushButton_zoomReset_clicked();
 
 private:
 
@@ -90,6 +96,8 @@ private:
     QGraphicsView *meshView = nullptr;
     ChartView *jobView = nullptr;
     //QChartView *visChartView = nullptr;
+    PointWidget *pointWidget = nullptr;
+
 
     QVector<QPointF> nodes;
     QVector<QVector<int>> tris;

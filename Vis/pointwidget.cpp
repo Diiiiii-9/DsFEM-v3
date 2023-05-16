@@ -1,21 +1,24 @@
-#include "pointdialog.h"
-#include "ui_pointdialog.h"
+#include "pointwidget.h"
+#include "ui_pointwidget.h"
 #include <QScatterSeries>
 #include <QVBoxLayout>
+#include <QListView>
+#include <QStandardItemModel>
 
-PointDialog::PointDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PointDialog)
+PointWidget::PointWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::PointWidget)
 {
     ui->setupUi(this);
+    ui->verticalLayout->addWidget(infoList);
 }
 
-PointDialog::~PointDialog()
+PointWidget::~PointWidget()
 {
     delete ui;
 }
 
-void PointDialog::createChartView() {
+void PointWidget::createChartView() {
     // Create chart and axis objects
     auto chart = new QChart();
     chart->createDefaultAxes();
@@ -45,12 +48,12 @@ void PointDialog::createChartView() {
     chartView_->setRenderHint(QPainter::Antialiasing);
 
     // Connect clicked signal of series to slot for handling point selection
-    connect(series, &QScatterSeries::clicked, this, &PointDialog::handlePointSelection);
+    connect(series, &QScatterSeries::clicked, this, &PointWidget::handlePointSelection);
 
     ui->horizontalLayout->addWidget(chartView_);
 }
 
-void PointDialog::handlePointSelection(const QPointF& point) {
+void PointWidget::handlePointSelection(const QPointF& point) {
     // Get index of selected point
     auto series = qobject_cast<QScatterSeries*>(sender());
     auto index = series->points().indexOf(point);
@@ -58,6 +61,22 @@ void PointDialog::handlePointSelection(const QPointF& point) {
     // Output displacement of selected point
     if (index >= 0 && index < nodesDisplace_.size()) {
         const auto& displacement = nodesDisplace_[index];
-        qDebug() << "Selected point" << index << "has displacement" << displacement;
+        const auto& node = nodes_[index];
+
+//        qDebug() << "Selected point" << index
+//                 << "has displacement"
+//                 << "in x:" << displacement.x() - node.x()
+//                 << "in y:" << displacement.y() - node.y();
+
+        QString info = QString("Selected point %1 has displacement in x: %2 in y: %3")
+                           .arg(index)
+                           .arg(displacement.x() - node.x())
+                           .arg(displacement.y() - node.y());
+
+        QStandardItem *item = new QStandardItem(info);
+        model->appendRow(item);
+
+        infoList->setModel(model);
+
     }
 }

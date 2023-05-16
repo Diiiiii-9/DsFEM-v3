@@ -40,7 +40,7 @@ SOURCES += \
     Model/paintwidget.cpp \
     Model/rect.cpp \
     Model/shape.cpp \
-    Vis/pointdialog.cpp \
+    Vis/pointwidget.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -76,7 +76,8 @@ HEADERS += \
     Model/paintwidget.h \
     Model/rect.h \
     Model/shape.h \
-    Vis/pointdialog.h \
+    Utils/chartUtils.h \
+    Vis/pointwidget.h \
     header.h \
     mainwindow.h
 
@@ -85,7 +86,7 @@ FORMS += \
     Mesh/meshdialog.ui \
     Model/material.ui \
     Model/numtoplot.ui \
-    Vis/pointdialog.ui \
+    Vis/pointwidget.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -1,20 +1,22 @@
-#ifndef POINTDIALOG_H
-#define POINTDIALOG_H
+#ifndef POINTWIDGET_H
+#define POINTWIDGET_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QChartView>
+#include <QListView>
+#include <QStandardItemModel>
 
 namespace Ui {
-class PointDialog;
+class PointWidget;
 }
 
-class PointDialog : public QDialog
+class PointWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit PointDialog(QWidget *parent = nullptr);
-    ~PointDialog();
+    explicit PointWidget(QWidget *parent = nullptr);
+    ~PointWidget();
 
     void setMeshData(const QVector<QPointF>& nodes, const QVector<QPointF>& nodesDisplace, const QVector<QVector<int>>& tris) {
         nodes_ = nodes;
@@ -25,7 +27,7 @@ public:
     void createChartView();
 
 private:
-    Ui::PointDialog *ui;
+    Ui::PointWidget *ui;
 
     QVector<QPointF> nodes_;
     QVector<QPointF> nodesDisplace_;
@@ -33,8 +35,13 @@ private:
 
     QChartView* chartView_;
 
+
+    QListView *infoList = new QListView(this);
+
+    QStandardItemModel *model = new QStandardItemModel(this);
+
 private slots:
     void handlePointSelection(const QPointF& point);
 };
 
-#endif // POINTDIALOG_H
+#endif // POINTWIDGET_H

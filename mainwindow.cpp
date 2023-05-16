@@ -39,8 +39,6 @@ extern "C"
 #include "Job/boundcondition.h"
 #include "Job/job.h"
 
-#include "Vis/pointdialog.h"
-
 //极小值
 #define epsilon 1e-6
 #define PI 3.14159265
@@ -61,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     paintWidget = new PaintWidget(this);
     bound = new BoundCondition(this);
+    pointWidget = new PointWidget;
 
     ui->horizontalLayout_model->addWidget(paintWidget);
 
@@ -848,22 +847,6 @@ void MainWindow::on_pushButton_distribute_clicked()
     emit changeBoundCondition(boundFlag);
 }
 
-
-void MainWindow::on_tabWidget_currentChanged(int index)
-{
-//    QMessageBox msgBox;
-//    msgBox.setIcon(QMessageBox::Warning);
-//    msgBox.setText("Are you sure you want to switch tabs?");
-//    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-//    msgBox.setDefaultButton(QMessageBox::Cancel);
-//    int reply = msgBox.exec();
-//    if (reply == QMessageBox::Cancel) {
-//        ui->tabWidget->setCurrentIndex(this->previousIndex);
-//    } else {
-//        this->previousIndex = index;
-//    }
-}
-
 void MainWindow::writeMaterial(QString inFile)
 {
     QFile file(inFile);
@@ -1012,6 +995,7 @@ void MainWindow::showFinalChart(QString outFile)
     noDisChart->legend()->hide();
     noDisChart->createDefaultAxes();
 
+
     disChart->setTitle("Von Mises Stress with displacement");
     disChart->legend()->hide();
     disChart->createDefaultAxes();
@@ -1084,14 +1068,30 @@ void MainWindow::showFinalChart(QString outFile)
 
 void MainWindow::on_pushButton_selectPoint_clicked()
 {
-    PointDialog pointWidget;
-    pointWidget.setModal(true);
-    int reply = pointWidget.exec();
+    // Set data on PointWidget
+    pointWidget->setMeshData(nodes, nodesDisplace, tris);
+
+    pointWidget->createChartView();
+
+    // Show PointWidget
+    pointWidget->show();
+}
 
 
-    // Set mesh data for PointWidget
-    pointWidget.setMeshData(nodes, nodesDisplace, tris);
+void MainWindow::on_pushButton_zoomIn_clicked()
+{
+    jobView->chart()->zoomIn();
+}
 
-    pointWidget.createChartView();
+
+void MainWindow::on_pushButton_zoomOut_clicked()
+{
+    jobView->chart()->zoomOut();
+}
+
+
+void MainWindow::on_pushButton_zoomReset_clicked()
+{
+    jobView->chart()->zoomReset();
 }
 
