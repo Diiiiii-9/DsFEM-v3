@@ -40,7 +40,9 @@ SOURCES += \
     Model/paintwidget.cpp \
     Model/rect.cpp \
     Model/shape.cpp \
+    Vis/comparisonwidget.cpp \
     Vis/pointwidget.cpp \
+    Vis/triwidget.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -77,7 +79,9 @@ HEADERS += \
     Model/rect.h \
     Model/shape.h \
     Utils/chartUtils.h \
+    Vis/comparisonwidget.h \
     Vis/pointwidget.h \
+    Vis/triwidget.h \
     header.h \
     mainwindow.h
 
@@ -87,6 +91,7 @@ FORMS += \
     Model/material.ui \
     Model/numtoplot.ui \
     Vis/pointwidget.ui \
+    Vis/triwidget.ui \
     mainwindow.ui
 
 # Default rules for deployment.

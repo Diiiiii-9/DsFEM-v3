@@ -42,6 +42,7 @@ private:
 
 private slots:
     void handlePointSelection(const QPointF& point);
+    void handlePointHovered(const QPointF& point, bool state);
 };
 
 #endif // POINTWIDGET_H

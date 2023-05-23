@@ -14,6 +14,7 @@
 #include <QVariant>
 #include <QXYSeries>
 #include <Vis/pointwidget.h>
+#include <Vis/triwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -62,6 +63,10 @@ private slots:
 
     void on_pushButton_zoomReset_clicked();
 
+    void on_pushButton_selectTri_clicked();
+
+    void on_pushButton_compare_clicked();
+
 private:
 
     Ui::MainWindow *ui;
@@ -97,12 +102,14 @@ private:
     ChartView *jobView = nullptr;
     //QChartView *visChartView = nullptr;
     PointWidget *pointWidget = nullptr;
+    TriWidget *triWidget = nullptr;
 
 
     QVector<QPointF> nodes;
     QVector<QVector<int>> tris;
     QVector<QPointF> nodesDisplace;
     QVector<float> misesStress;
+    QVector<QColor> triColor;
 };
 
 

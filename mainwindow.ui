@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_model">
        <attribute name="title">
@@ -46,7 +46,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="page_plot">
              <property name="geometry">
@@ -225,14 +225,14 @@
             </item>
             <item>
              <layout class="QFormLayout" name="formLayout">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QLabel" name="elementSizeLabel">
                 <property name="text">
                  <string>Element size</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="1" column="1">
                <widget class="QLineEdit" name="elementSizeLineEdit">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -242,27 +242,41 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="sizeFunctionLabel">
                 <property name="text">
                  <string>Size function (optional)</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="2" column="1">
                <widget class="QLineEdit" name="sizeFunctionLineEdit"/>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="edgeRefinementLabel">
                 <property name="text">
                  <string>Edge refinement</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QLineEdit" name="edgeRefinementLineEdit">
                 <property name="text">
                  <string>1.4</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="boundingBoxLabel">
+                <property name="text">
+                 <string>Bounding box</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="boundingBoxLineEdit">
+                <property name="text">
+                 <string>-10.0, -10.0, 1000.0, 1000.0</string>
                 </property>
                </widget>
               </item>
@@ -316,9 +330,17 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="page_zoom">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>115</width>
+               <height>349</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Zoom</string>
              </attribute>
@@ -444,7 +466,7 @@
                <x>0</x>
                <y>0</y>
                <width>113</width>
-               <height>94</height>
+               <height>349</height>
               </rect>
              </property>
              <attribute name="label">
@@ -538,6 +560,13 @@
            <widget class="QPushButton" name="pushButton_selectTri">
             <property name="text">
              <string>Select Triangle</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_compare">
+            <property name="text">
+             <string>Comparison chart</string>
             </property>
            </widget>
           </item>

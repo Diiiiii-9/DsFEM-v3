@@ -39,6 +39,8 @@ extern "C"
 #include "Job/boundcondition.h"
 #include "Job/job.h"
 
+#include <Vis/comparisonwidget.h>
+
 //极小值
 #define epsilon 1e-6
 #define PI 3.14159265
@@ -60,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     paintWidget = new PaintWidget(this);
     bound = new BoundCondition(this);
     pointWidget = new PointWidget;
+    triWidget = new TriWidget;
 
     ui->horizontalLayout_model->addWidget(paintWidget);
 
@@ -607,7 +610,7 @@ void MainWindow::writeToMeshFile()
     float gloabalElementSize = ui->elementSizeLineEdit->text().toFloat();
     int quadElement = 50;
     //Model can be within -10.0, -10.0, 1000.0, 1000.0
-    QString boundingBox = "-10.0, -10.0, 1000.0, 1000.0";
+    QString boundingBox = ui->boundingBoxLineEdit->text();
     QString sizeFunc = ui->sizeFunctionLineEdit->text();
 
 
@@ -898,17 +901,18 @@ QColor getColorForMisesStress(float misesStress, float minMisesStress, float max
     QColor minColor(Qt::blue);
     QColor maxColor(Qt::red);
 
-    // Calculate the color based on the misesStress value
-    float valueRange = maxMisesStress - minMisesStress;
-    float valuePosition = (misesStress - minMisesStress) / valueRange;
-    int red = static_cast<int>((maxColor.red() - minColor.red()) * valuePosition + minColor.red());
-    int green = static_cast<int>((maxColor.green() - minColor.green()) * valuePosition + minColor.green());
-    int blue = static_cast<int>((maxColor.blue() - minColor.blue()) * valuePosition + minColor.blue());
+    // Calculate the hue based on the misesStress value
+    float hueRange = maxColor.hueF() - minColor.hueF();
+    float hue = minColor.hueF() + hueRange * ((misesStress - minMisesStress) / (maxMisesStress - minMisesStress));
 
-    // Return the color
-    return QColor(red, green, blue);
+    // Calculate the saturation and value as constants
+    float saturation = 1.0;
+    float value = 1.0;
 
+    // Create and return the color in the HSV color space
+    return QColor::fromHsvF(hue, saturation, value);
 }
+
 
 
 void MainWindow::showFinalChart(QString outFile)
@@ -959,7 +963,7 @@ void MainWindow::showFinalChart(QString outFile)
     QChart *noDisChart = new QChart();
     QChart *disChart = new QChart();
 
-
+    triColor.clear();
     // Loop through the triangles and create a QPolygonF object for each triangle, with the points
     // of the triangle as vertices. Set the fill color of the polygon based on the stress value.
 
@@ -975,6 +979,9 @@ void MainWindow::showFinalChart(QString outFile)
             *disSeries << disNode;
         }
         QColor color = getColorForMisesStress(misesStress[i], minMisesStress, maxMisesStress);
+
+        // To store those color
+        triColor.append(color);
 
         QAreaSeries *seriesArea = new QAreaSeries(series, series_zero);
         QAreaSeries *disSeriesArea = new QAreaSeries(disSeries, series_zero);
@@ -1037,6 +1044,7 @@ void MainWindow::showFinalChart(QString outFile)
     // Create a linear gradient that spans the Mises stress range
     QLinearGradient gradient(0, 0, 0, 300);
     gradient.setColorAt(0.0, getColorForMisesStress(minMisesStress, minMisesStress, maxMisesStress));
+    gradient.setColorAt(0.5, getColorForMisesStress((minMisesStress + maxMisesStress)/2, minMisesStress, maxMisesStress));
     gradient.setColorAt(1.0, getColorForMisesStress(maxMisesStress, minMisesStress, maxMisesStress));
 
     // Create a color bar widget and set the gradient as its background
@@ -1093,5 +1101,46 @@ void MainWindow::on_pushButton_zoomOut_clicked()
 void MainWindow::on_pushButton_zoomReset_clicked()
 {
     jobView->chart()->zoomReset();
+}
+
+
+void MainWindow::on_pushButton_selectTri_clicked()
+{
+    QDialog* dialog = new QDialog(this);
+    TriWidget* triWidget = new TriWidget(dialog);
+    triWidget->setTriangles(tris);
+    triWidget->setNodes(nodes);
+    triWidget->setColor(this->triColor);
+
+    connect(triWidget, &TriWidget::triangleSelected, [&](int index) {
+        QString message = "Selected triangle stress: " + QString::number(this->misesStress[index]);
+        QMessageBox::information(this, "Triangle Selection", message);
+    });
+
+    QVBoxLayout* layout = new QVBoxLayout(dialog);
+    layout->addWidget(triWidget);
+    dialog->setLayout(layout);
+
+    // Set dialog properties
+    dialog->setWindowTitle("TriWidget Pop-up");
+    dialog->setModal(true); // Set it as modal if necessary
+
+    // Calculate the desired size for the dialog based on the size of the TriWidget
+    QSize triWidgetSize = triWidget->size();
+    QSize dialogSize = triWidgetSize + QSize(20, 20); // Add padding
+
+    dialog->setFixedSize(dialogSize); // Set the fixed size of the dialog
+    dialog->show();
+}
+
+
+
+
+
+void MainWindow::on_pushButton_compare_clicked()
+{
+    ComparisonWidget* comparisonWidget = new ComparisonWidget(this);
+    comparisonWidget->setTriangles(nodes, tris, nodesDisplace);
+    comparisonWidget->show();
 }
 

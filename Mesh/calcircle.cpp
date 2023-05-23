@@ -46,7 +46,7 @@ std::vector<float> CalCircle::addNPointsEvenly(int N) {
 
             float intervalLength = points[i+1] - start;
 
-            if (intervalLength > 2 * increment)
+            if (intervalLength > 3 * increment)
             {
                 start += increment;
                 newPoints.push_back(start);
@@ -63,7 +63,9 @@ std::vector<float> CalCircle::addNPointsEvenly(int N) {
     }
     std::sort(newPoints.begin(), newPoints.end());
 
-    qDebug() << "points:" << points;
+    //qDebug() << "points:" << points;
+
+
 
     this->points.assign(newPoints.begin(), newPoints.end());
 
