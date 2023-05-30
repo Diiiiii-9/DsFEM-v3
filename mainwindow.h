@@ -54,18 +54,16 @@ private slots:
     void on_pushButton_point_clicked();
     void on_pushButton_distribute_clicked();
     void on_pushButton_job_clicked();
-
     void on_pushButton_selectPoint_clicked();
-
     void on_pushButton_zoomIn_clicked();
-
     void on_pushButton_zoomOut_clicked();
-
     void on_pushButton_zoomReset_clicked();
-
     void on_pushButton_selectTri_clicked();
-
     void on_pushButton_compare_clicked();
+    void on_actionSave_Results_triggered();
+    void on_actionOpen_Result_triggered();
+
+    void on_actionUnit_conversion_triggered();
 
 private:
 
@@ -110,6 +108,7 @@ private:
     QVector<QPointF> nodesDisplace;
     QVector<float> misesStress;
     QVector<QColor> triColor;
+
 };
 
 

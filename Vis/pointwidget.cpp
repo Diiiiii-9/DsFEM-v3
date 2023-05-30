@@ -12,7 +12,12 @@ PointWidget::PointWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->verticalLayout->addWidget(infoList);
+//    // Adjust stretch factors
+//    ui->horizontalLayout->setStretchFactor(chartView_, 2); // Expand horizontally more
+//    ui->horizontalLayout->setStretchFactor(graphicsView, 2); // Expand horizontally more
+//    ui->horizontalLayout->setStretchFactor(infoList, 1); // Expand horizontally less
 }
+
 
 PointWidget::~PointWidget()
 {
@@ -88,12 +93,12 @@ void PointWidget::createChartView() {
         for (int i = 0; i < 3; ++i) {
             const auto& node1 = nodes_[tri[i]];
             const auto& node2 = nodes_[tri[(i + 1) % 3]];
-            scene->addLine(node1.x(), node1.y(), node2.x(), node2.y(), QPen(Qt::black));
+            scene->addLine(node1.x(), node1.y(), node2.x(), node2.y(), QPen(Qt::black, 0.5));
         }
     }
 
     // Create QGraphicsView and set the scene
-    QGraphicsView* graphicsView = new QGraphicsView(scene);
+    graphicsView = new QGraphicsView(scene);
     graphicsView->setRenderHint(QPainter::Antialiasing);
 
     // Flip the graphics view vertically
@@ -114,13 +119,30 @@ void PointWidget::createChartView() {
     chartView_ = new QChartView(chart);
     chartView_->setRenderHint(QPainter::Antialiasing);
 
-    // Connect clicked signal of series to slot for handling point selection
-    connect(series, &QScatterSeries::clicked, this, &PointWidget::handlePointSelection);
-    connect(series, &QScatterSeries::hovered, this, &PointWidget::handlePointHovered);
+    // Remove and delete the existing widgets
+    QLayoutItem* item;
+    while ((item = ui->horizontalLayout->takeAt(0)) != nullptr) {
+        QWidget* widget = item->widget();
+        if (widget) {
+            ui->horizontalLayout->removeWidget(widget);
+            delete widget;
+        }
+        delete item;
+    }
 
     // Add the QChartView and QGraphicsView to the layout
     ui->horizontalLayout->addWidget(chartView_);
     ui->horizontalLayout->addWidget(graphicsView);
+
+    // Connect clicked signal of series to slot for handling point selection
+    connect(series, &QScatterSeries::clicked, this, &PointWidget::handlePointSelection);
+    connect(series, &QScatterSeries::hovered, this, &PointWidget::handlePointHovered);
+
+    // Set size policies
+    infoList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum); // Small size preference
+    chartView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); // Large size preference
+    graphicsView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); // Large size preference
+
 }
 
 void PointWidget::handlePointHovered(const QPointF& point, bool state) {
@@ -142,9 +164,6 @@ void PointWidget::handlePointHovered(const QPointF& point, bool state) {
         QToolTip::showText(QCursor::pos(), info);
     }
 }
-
-
-
 
 
 void PointWidget::handlePointSelection(const QPointF& point) {

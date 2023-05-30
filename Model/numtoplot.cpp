@@ -46,22 +46,25 @@ void NumToPlot::on_pushButton_addRect_clicked()
     ui->listWidget->addItem(item);
 }
 
-
-void NumToPlot::on_pushButton_addLine_clicked()
+void NumToPlot::on_pushButton_addpoly_clicked()
 {
-    double x1 = ui->X_startLineEdit->text().toDouble();
-    double y1 = ui->Y_startLineEdit->text().toDouble();
-    double x2 = ui->X_endLineEdit->text().toDouble();
-    double y2 = ui->Y_endLineEdit->text().toDouble();
+    // Iterate over the points in the polygon
+    int pointCount = polygon.size();
+    for (int i = 0; i < pointCount; ++i) {
+        const QPointF& startPoint = polygon[i];
+        const QPointF& endPoint = polygon[(i + 1) % pointCount];  // Wrap around to the first point for the last segment
 
-    QString data_line = QString("Line") + " "
-            + QString::number(x1) + " "
-            + QString::number(y1) + " "
-            + QString::number(x2) + " "
-            + QString::number(y2);
+        // Construct the line in the desired format
+        QString line = QString("Line %1 %2 %3 %4")
+                           .arg(startPoint.x())
+                           .arg(startPoint.y())
+                           .arg(endPoint.x())
+                           .arg(endPoint.y());
 
-    QListWidgetItem *item = new QListWidgetItem(data_line);
-    ui->listWidget->addItem(item);
+
+        QListWidgetItem* item = new QListWidgetItem(line);
+        ui->listWidget->addItem(item);
+    }
 }
 
 
@@ -112,5 +115,41 @@ void NumToPlot::on_buttonBox_accepted()
     file.close();
 
     ui->listWidget->clear();
+}
+
+
+
+void NumToPlot::on_pushButton_addpolyPoint_clicked()
+{
+    QString pointText = ui->lineEdit_polyPoint->text();  // Get the point text from the QLineEdit
+    QStringList coordinates = pointText.split(",");  // Split the text by comma to extract x and y coordinates
+
+    if (coordinates.size() == 2) {
+        bool conversionOkX, conversionOkY;
+        float x = coordinates[0].toFloat(&conversionOkX);  // Convert the x coordinate to float
+        float y = coordinates[1].toFloat(&conversionOkY);  // Convert the y coordinate to float
+
+        if (conversionOkX && conversionOkY) {
+            // Add the point to the polygon
+            polygon << QPointF(x, y);
+
+            // Update the QLabel to display the updated polygon
+            QString polygonStr = "Polygon: ";
+            for (const QPointF& point : polygon) {
+                polygonStr += QString("(%1, %2) ").arg(point.x()).arg(point.y());
+            }
+            ui->label_poly->setText(polygonStr);
+        }
+    }
+}
+
+
+void NumToPlot::on_pushButton_deletepoly_clicked()
+{
+    // Clear the polygon
+    polygon.clear();
+
+    // Clear the QLabel
+    ui->label_poly->clear();
 }
 

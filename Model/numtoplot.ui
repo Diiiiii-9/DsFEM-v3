@@ -40,7 +40,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_rect">
       <attribute name="title">
@@ -61,7 +61,7 @@
            <item row="0" column="1">
             <widget class="QLineEdit" name="X_TopLeftLineEdit">
              <property name="text">
-              <string>0</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -75,7 +75,7 @@
            <item row="1" column="1">
             <widget class="QLineEdit" name="Y_TopLeftLineEdit">
              <property name="text">
-              <string>0</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -89,7 +89,7 @@
            <item row="2" column="1">
             <widget class="QLineEdit" name="X_BottomRightLineEdit">
              <property name="text">
-              <string>100</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -103,7 +103,7 @@
            <item row="3" column="1">
             <widget class="QLineEdit" name="Y_BottomRightLineEdit">
              <property name="text">
-              <string>100</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -128,65 +128,60 @@
      </widget>
      <widget class="QWidget" name="tab_poly">
       <attribute name="title">
-       <string>Line</string>
+       <string>Poly</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <layout class="QFormLayout" name="formLayout_2">
-           <item row="0" column="0">
-            <widget class="QLabel" name="X_startLabel">
-             <property name="text">
-              <string>The x value of the start point</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="X_startLineEdit"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="Y_startLabel">
-             <property name="text">
-              <string>The y value of the start point</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="Y_startLineEdit"/>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="X_endLabel">
-             <property name="text">
-              <string>The x value of the end point</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="X_endLineEdit"/>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="Y_endLabel">
-             <property name="text">
-              <string>The y value of the end point</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="Y_endLineEdit"/>
-           </item>
-          </layout>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Point</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_addLine">
+          <widget class="QLineEdit" name="lineEdit_polyPoint">
+           <property name="text">
+            <string>2,0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_addpolyPoint">
+           <property name="text">
+            <string>Add to ploy</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_poly">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>ADD</string>
+            <string>(2,0)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_deletepoly">
+           <property name="text">
+            <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_addpoly">
+           <property name="text">
+            <string>Add</string>
            </property>
           </widget>
          </item>

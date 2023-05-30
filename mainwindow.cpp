@@ -41,6 +41,8 @@ extern "C"
 
 #include <Vis/comparisonwidget.h>
 
+#include <Utils/UnitConversionWidget.h>
+
 //极小值
 #define epsilon 1e-6
 #define PI 3.14159265
@@ -335,13 +337,14 @@ void MainWindow::on_pushButton_runModel_clicked()
     circlePointVector.clear();
     polyPointVector.clear();
 
-
-    //to determine if the point is the start point
-    bool firstPoint = true;
-    pair<float, float> tmpPair;
+    //CalPoly* currentPoly = nullptr;
+    bool inPolygon = false;
+//    //to determine if the point is the start point
+//    bool firstPoint = true;
+//    pair<float, float> tmpPair;
     CalPoly *newOne = nullptr;
     CalCircle *newCircle = nullptr;
-
+    QPointF firstPoint;
 
     // 1. store all point info (Line)
     foreach (Shape *shape, paintWidget->shapeList) {
@@ -350,31 +353,52 @@ void MainWindow::on_pushButton_runModel_clicked()
 
         if(shape->shapeName == "Line")
         {
-            //no the first point
-            if(!firstPoint)
-            {
-                //new starter
-                if ((tmpPair.first - start.x()) > epsilon || (tmpPair.first - start.y()) > epsilon )
-                {
-                    polyPointVector.push_back(*newOne);
-                    firstPoint = true;
-                }
-                else
-                {
-                    Point point {static_cast<float>(end.x()),static_cast<float>(end.y())};
-                    newOne->AddDirectedLine(point);
-                    tmpPair = make_pair(end.x(),end.y());
-                    continue;
-                }
-
+            // Check if this is the start of a new polygon
+            if (!inPolygon) {
+                newOne = new CalPoly(start.x(), start.y());
+                firstPoint.setX(start.x());
+                firstPoint.setY(start.y());
+                inPolygon = true;
             }
 
-            //for those first point of the poly
-            newOne = new CalPoly(start.x(),start.y());
-            Point _point {static_cast<float>(start.x()),static_cast<float>(start.y())};
-            newOne->AddDirectedLine(_point);
-            tmpPair = make_pair(end.x(),end.y());
-            firstPoint = false;
+            // Add the point to the current polygon
+            Point point {static_cast<float>(end.x()), static_cast<float>(end.y())};
+            newOne->AddDirectedLine(point);
+
+            QPointF endf(end.x(), end.y());
+            float distance = QLineF(firstPoint, endf).length();
+
+            // Check if this is the end of the polygon
+            if ( distance < epsilon ) {
+                polyPointVector.push_back(*newOne);
+                inPolygon = false;
+                newOne = nullptr;
+            }
+//            //no the first point
+//            if(!firstPoint)
+//            {
+//                //new starter
+//                if ((tmpPair.first - start.x()) > epsilon || (tmpPair.first - start.y()) > epsilon )
+//                {
+//                    polyPointVector.push_back(*newOne);
+//                    firstPoint = true;
+//                }
+//                else
+//                {
+//                    Point point {static_cast<float>(end.x()),static_cast<float>(end.y())};
+//                    newOne->AddDirectedLine(point);
+//                    tmpPair = make_pair(end.x(),end.y());
+//                    continue;
+//                }
+
+//            }
+
+//            //for those first point of the poly
+//            newOne = new CalPoly(start.x(),start.y());
+//            Point _point {static_cast<float>(start.x()),static_cast<float>(start.y())};
+//            newOne->AddDirectedLine(_point);
+//            tmpPair = make_pair(end.x(),end.y());
+//            firstPoint = false;
 
         }
         else if(shape->shapeName == "Rect")
@@ -429,14 +453,17 @@ void MainWindow::on_pushButton_runModel_clicked()
     transform.scale(1, -1);
     meshView->setTransform(transform);
 
-    QPen pen(Qt::black, 2);
+    // Adjust the view to fit the contents
+    meshView->setSceneRect(meshScene->itemsBoundingRect());
+
+    QPen pen(Qt::black);
     pen.setBrush(Qt::NoBrush);
 
     for (const CalCircle &circle : circlePointVector) {
         QGraphicsEllipseItem *_circle = new QGraphicsEllipseItem(circle.getX() - circle.getR(),
                                                                  circle.getY() - circle.getR(),
-                                                                 circle.getR()*2,
-                                                                 circle.getR()*2);
+                                                                 circle.getR() * 2,
+                                                                 circle.getR() * 2);
         pen.setColor(Qt::red);
         _circle->setPen(pen);
         _circle->setBrush(Qt::transparent);
@@ -447,11 +474,11 @@ void MainWindow::on_pushButton_runModel_clicked()
         QPolygonF polygonPoints;
         std::vector<Point> points = poly.getPointList();
 
-        for (Point point : points) {
+        for (const Point &point : points) {
             polygonPoints << QPointF(point.x, point.y);
         }
 
-        QGraphicsPolygonItem *polygon  = new QGraphicsPolygonItem(polygonPoints);
+        QGraphicsPolygonItem *polygon = new QGraphicsPolygonItem(polygonPoints);
         pen.setColor(Qt::blue);
         polygon->setPen(pen);
         polygon->setBrush(Qt::transparent);
@@ -459,6 +486,7 @@ void MainWindow::on_pushButton_runModel_clicked()
     }
 
     ui->horizontalLayout_mesh->addWidget(meshView);
+
 
     int currentIndex = ui->tabWidget->currentIndex();
     int nextIndex = (currentIndex + 1) % ui->tabWidget->count(); // Wrap around if at the end
@@ -1143,4 +1171,172 @@ void MainWindow::on_pushButton_compare_clicked()
     comparisonWidget->setTriangles(nodes, tris, nodesDisplace);
     comparisonWidget->show();
 }
+
+
+
+
+void MainWindow::on_actionSave_Results_triggered()
+{
+    // Prompt the user to select a save location and file name
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Results", QString(), "Text Files (*.txt)");
+
+    if (!filePath.isEmpty()) {
+        QFile file(filePath);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream stream(&file);
+
+            // Write the variables to the file
+            stream << "Nodes:\n";
+            for (const QPointF& point : nodes) {
+                stream << QString("x: %1, y: %2\n").arg(point.x()).arg(point.y());
+            }
+
+            stream << "\nTriangles:\n";
+            for (const QVector<int>& tri : tris) {
+                for (int index : tri) {
+                    stream << index << "\t";
+                }
+                stream << "\n";
+            }
+
+            stream << "\nNodes Displacement:\n";
+            for (const QPointF& point : nodesDisplace) {
+                stream << QString("x: %1, y: %2\n").arg(point.x()).arg(point.y());
+            }
+
+            stream << "\nMises Stress:\n";
+            for (float stress : misesStress) {
+                stream << stress << "\n";
+            }
+
+            file.close();
+
+            // Show a message box to indicate successful save
+            QMessageBox::information(this, "Save Results", "Results saved successfully.");
+        } else {
+            // Show an error message if the file could not be opened
+            QMessageBox::critical(this, "Save Results", "Unable to open the file for writing.");
+        }
+    }
+}
+
+
+
+void MainWindow::on_actionOpen_Result_triggered()
+{
+    // Prompt the user to select a file to open
+    QString filePath = QFileDialog::getOpenFileName(this, "Open Result", QString(), "Text Files (*.txt)");
+
+    if (!filePath.isEmpty()) {
+        QFile file(filePath);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream stream(&file);
+
+            // Clear existing data or create new variables to store the read values
+            QVector<QPointF> readNodes;
+            QVector<QVector<int>> readTris;
+            QVector<QPointF> readNodesDisplace;
+            QVector<float> readMisesStress;
+
+            // Read the file line by line and parse the data
+            QString line;
+            while (!stream.atEnd()) {
+                line = stream.readLine();
+
+                if (line == "Nodes:") {
+                    // Read and parse the nodes section
+                    readNodes.clear();
+                    while (!stream.atEnd()) {
+                        line = stream.readLine();
+                        if (line.isEmpty())
+                            break;
+
+                        QStringList coordinates = line.split(',', Qt::SkipEmptyParts);
+                        if (coordinates.size() == 2) {
+                            float x = coordinates.at(0).trimmed().toFloat();
+                            float y = coordinates.at(1).trimmed().toFloat();
+                            readNodes.append(QPointF(x, y));
+                        }
+                    }
+                } else if (line == "Triangles:") {
+                    // Read and parse the triangles section
+                    readTris.clear();
+                    while (!stream.atEnd()) {
+                        line = stream.readLine();
+                        if (line.isEmpty())
+                            break;
+
+                        QStringList indices = line.split(',', Qt::SkipEmptyParts);
+                        QVector<int> triangle;
+                        for (const QString& index : indices) {
+                            triangle.append(index.trimmed().toInt());
+                        }
+                        readTris.append(triangle);
+                    }
+                } else if (line == "Nodes Displacement:") {
+                    // Read and parse the nodes displacement section
+                    readNodesDisplace.clear();
+                    while (!stream.atEnd()) {
+                        line = stream.readLine();
+                        if (line.isEmpty())
+                            break;
+
+                        QStringList coordinates = line.split(',', Qt::SkipEmptyParts);
+                        if (coordinates.size() == 2) {
+                            float x = coordinates.at(0).trimmed().toFloat();
+                            float y = coordinates.at(1).trimmed().toFloat();
+                            readNodesDisplace.append(QPointF(x, y));
+                        }
+                    }
+                } else if (line == "Mises Stress:") {
+                    // Read and parse the Mises stress section
+                    readMisesStress.clear();
+                    while (!stream.atEnd()) {
+                        line = stream.readLine();
+                        if (line.isEmpty())
+                            break;
+
+                        float stress = line.trimmed().toFloat();
+                        readMisesStress.append(stress);
+                    }
+                }
+            }
+
+            file.close();
+
+            // Assign the read values to your member variables
+            nodes = readNodes;
+            tris = readTris;
+            nodesDisplace = readNodesDisplace;
+            misesStress = readMisesStress;
+
+            // Show a message box to indicate successful read
+            QMessageBox::information(this, "Open Result", "Results loaded successfully.");
+        } else {
+            // Show an error message if the file could not be opened
+            QMessageBox::critical(this, "Open Result", "Unable to open the file for reading.");
+        }
+    }
+}
+
+
+
+void MainWindow::on_actionUnit_conversion_triggered()
+{
+    UnitConversionWidget *unitConversionWidget = new UnitConversionWidget(this);
+    QDialog dialog(this);
+    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    layout->addWidget(unitConversionWidget);
+    dialog.setLayout(layout);
+    dialog.exec();
+
+    // You can also connect to the resultChanged signal if you want to capture the result
+    connect(unitConversionWidget, &UnitConversionWidget::resultChanged, this, [](const QString& resultText){
+        qDebug() << "Result:" << resultText;
+    });
+
+    // Clean up the widget after the dialog is closed
+    dialog.deleteLater();
+}
+
 

@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_model">
        <attribute name="title">
@@ -46,7 +46,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page_plot">
              <property name="geometry">
@@ -330,7 +330,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page_zoom">
              <property name="geometry">
@@ -387,7 +387,7 @@
                <x>0</x>
                <y>0</y>
                <width>83</width>
-               <height>349</height>
+               <height>184</height>
               </rect>
              </property>
              <attribute name="label">
@@ -466,7 +466,7 @@
                <x>0</x>
                <y>0</y>
                <width>113</width>
-               <height>349</height>
+               <height>94</height>
               </rect>
              </property>
              <attribute name="label">
@@ -636,12 +636,14 @@
       <string>Open</string>
      </property>
      <addaction name="actionOpen_Model"/>
+     <addaction name="actionOpen_Result"/>
     </widget>
     <widget class="QMenu" name="menuSave">
      <property name="title">
       <string>Save</string>
      </property>
      <addaction name="actionSave_Model"/>
+     <addaction name="actionSave_Results"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="menuOpen"/>
@@ -669,6 +671,7 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionUnit_conversion"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -743,6 +746,29 @@
    </property>
    <property name="text">
     <string>Save Model</string>
+   </property>
+  </action>
+  <action name="actionSave_Results">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/resource/resource/save.png</normaloff>:/resource/resource/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Results</string>
+   </property>
+  </action>
+  <action name="actionOpen_Result">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/resource/resource/open.png</normaloff>:/resource/resource/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Result</string>
+   </property>
+  </action>
+  <action name="actionUnit_conversion">
+   <property name="text">
+    <string>Unit conversion</string>
    </property>
   </action>
  </widget>

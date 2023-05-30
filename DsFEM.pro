@@ -78,6 +78,7 @@ HEADERS += \
     Model/paintwidget.h \
     Model/rect.h \
     Model/shape.h \
+    Utils/UnitConversionWidget.h \
     Utils/chartUtils.h \
     Vis/comparisonwidget.h \
     Vis/pointwidget.h \

@@ -227,9 +227,9 @@ bool BoundCondition::eventFilter(QObject* obj, QEvent* event)
                 // make sure there're 4 point every circle. [0-1-2-0]
                 assert(points.size() == 4);
 
-                for (int i = 0; i < points.size(); ++i) {
+                for (int i = 0; i < points.size()-1; ++i) {
                     int index1 = i;
-                    int index2 = (i + 1) % points.size();
+                    int index2 = i + 1;
 
                     QPointF p1 = points[index1];
                     QPointF p2 = points[index2];

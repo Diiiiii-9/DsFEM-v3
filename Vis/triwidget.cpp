@@ -39,6 +39,11 @@ void TriWidget::paintEvent(QPaintEvent* event) {
     painter.scale(1, -1);
     painter.translate(0, -height());
 
+    // Set the pen's width to a smaller value (e.g., 1.0)
+    QPen pen = painter.pen();
+    pen.setWidthF(0.1); // Adjust the width as desired
+    painter.setPen(pen);
+
     // Calculate the target rectangle to be shown based on node coordinates
     QPointF minNode = QPointF(std::numeric_limits<qreal>::max(), std::numeric_limits<qreal>::max());
     QPointF maxNode = QPointF(std::numeric_limits<qreal>::lowest(), std::numeric_limits<qreal>::lowest());

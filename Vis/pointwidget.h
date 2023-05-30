@@ -33,7 +33,8 @@ private:
     QVector<QPointF> nodesDisplace_;
     QVector<QVector<int>> tris_;
 
-    QChartView* chartView_;
+    QChartView* chartView_ = nullptr;
+    QGraphicsView* graphicsView = nullptr;
 
 
     QListView *infoList = new QListView(this);

@@ -46,7 +46,7 @@ std::vector<float> CalCircle::addNPointsEvenly(int N) {
 
             float intervalLength = points[i+1] - start;
 
-            if (intervalLength > 3 * increment)
+            if (intervalLength > 2.5 * increment)
             {
                 start += increment;
                 newPoints.push_back(start);
